@@ -1,0 +1,4 @@
+<resources>
+    <string name="libName">fileChooser</string>
+    <string name="working">working on that... please wait</string>
+</resources>

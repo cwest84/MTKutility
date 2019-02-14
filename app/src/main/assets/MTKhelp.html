@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>MTK logger utility</title></head><body>
+<div style="text-align: center;">
+<p><big><big><span style="font-weight: bold;"><span style="color: rgb(0, 153, 0);">The Things You Need to Know</span></span></big></big></p>
+</div><b style="color: rgb(0, 0, 153);"><i>MTKutility</i></b>
+is a maintenance app for Bluetooth capable GPS receivers and loggers
+that use
+the MTK (GPS) chip.&nbsp; The MTK GPS devices that it will work with
+are GPS
+receivers (no logging) with or without AGPS and GPS loggers with or
+without AGPS.&nbsp; It has been tested on physical phones running Android 4.1, 4.4, 5.1 and 8.1.<br>
+<br>
+MTKutility uses Android's Navigation Drawer menu. To
+show the menu click on the 3 bars at the top left of the screen, or
+alternatively slide your finger to the right from the left edge of your
+screen.&nbsp; The menu will only show actions that your GPS device
+supports.&nbsp; <span style="font-weight: bold;">You have to connect to your GPS device before the full
+menu for your GPS device will show</span><small>.</small><br>
+<br>The <span style="color: rgb(0, 170, 0); font-weight: bold;">Home</span> and <span style="color: rgb(0, 170, 0); font-weight: bold;">Update Settings</span>
+screen font sizes are configurable. They have been set for an 720x1280 pixel
+device.&nbsp; You may need to adjust font size for your phone to
+improve your experience.&nbsp;
+Click the wrench symbol at the top right to open the preferences
+screen, click the font you want to adjust and enter a
+new size, and refresh the screen by reselecting it in the navigation menu.&nbsp; Please
+email if you need any of the other screens adjusted for your phone.<br>
+
+<br>
+<div style="margin-left: 40px;"><big style="font-style: italic;"><a style="font-weight: bold;" href="#problems">dealing with problems</a></big> <big><span style="color: red;">- very important - please read</span></big><br>
+
+</div>
+<br>
+
+<a name="top"></a><b style="color: rgb(51, 51, 255);"><i><br>
+</i></b>Use these links to quickly move to the help for the screen.<span class=""></span><br>
+<u1:p>
+</u1:p>
+<ul>
+  <li><a href="#Home">Home</a></li>
+  <li><a href="#download_log">Download Log</a></li>
+  <li><a href="#make_GPX_file">Make GPX file</a></li>
+  <li><a href="#get_EPO_file">Get EPO file</a></li>
+  <li><a href="#Check_EPO_file">Check EPO file</a></li>
+  <li><a href="#update_AGPS">Update AGPS</a></li>
+  <li><a href="#update_settings">Update Settings</a></li>
+  <li><a href="#send_app_log">Send App Log</a></li>
+  <li><a href="#help">Help</a> (this document)</li>
+  <li><a href="#about_app">About<br>
+</a></li>
+  <li><a href="#exit_app">Exit<br>
+</a></li>
+</ul>
+<ul>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</ul>
+<big><a style="color: red;" name="Home"></a></big><br>
+<span style="font-weight: bold; color: rgb(0, 170, 0);">Home</span> screen<br>
+<br>This screen has five areas.&nbsp; The top (1st) box shows the AGPS
+data expiry date on the first line and the number of GPS track points
+stored on the second line when the GPS device is connected.&nbsp; The 2nd box is for NMEA settings. The 3rd (unboxed)
+area buttons send commands to your GPS device.&nbsp; The 4th box is a
+scrollable message area for important events,&nbsp; The 5th box is the
+scrollable NMEA sentence display area.<br>
+<br>
+NMEA (National Marine Electronics Association) is a combined electrical
+and data specification for communication with GPS receivers.&nbsp;
+MTKutility provides for setting the display frequency of 7 formats:<br>
+<br>
+
+ 
+<table style="border-collapse: collapse; width: 364px; height: 167px;" border="0" cellpadding="0" cellspacing="0">
+<col style="width: 15pt;" width="20">
+ <col style="width: 27pt;" width="36">
+ <col style="width: 201pt;" width="268">
+ <tbody><tr style="height: 15pt;" height="20">
+  <td style="height: 15pt; width: 15pt;" height="20" width="20"><br>
+</td>
+  <td class="xl65" style="width: 27pt;" width="36">GGA</td>
+  <td class="xl65" style="width: 201pt;" width="268">Global Positioning System Fix
+  Data</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl65">GLL</td>
+  <td class="xl65">Geographic position, Latitude and Longitude</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl65">GSA</td>
+  <td class="xl65">Satellite status</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl65">GSV</td>
+  <td class="xl65">Satellites in view</td>
+ </tr>
+ <tr style="height: 15.75pt;" height="21">
+  <td style="height: 15.75pt;" height="21"><br>
+</td>
+  <td class="xl65">RMC</td>
+  <td class="xl65">Recommended Minimum sentence Content</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl65">VTG</td>
+  <td class="xl65"><span style="orphans: 2; widows: 2;">Vector track an Speed over the Ground</span></td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl65">ZDA</td>
+  <td class="xl65"><span style="orphans: 2; widows: 2;">Date and Time</span></td>
+ </tr>
+</tbody>
+</table>
+<br>
+<span style="font-weight: bold; color: rgb(204, 0, 0);">The row with these values scrolls left and right</span>.
+Each has a selection pull down with values 0 through 5 that determine
+if the format is displayed and how frequently it is displayed.&nbsp;
+The <span style="font-weight: bold; font-style: italic; color: rgb(0, 0, 153);">Save Settings</span> button will only work when you are connected to a GPS device.&nbsp; Your setting choices are:<br>
+<br>
+
+ 
+<table style="border-collapse: collapse; width: 363px; height: 126px;" border="0" cellpadding="0" cellspacing="0">
+<col style="width: 15pt;" width="20">
+ <col style="width: 27pt;" width="36">
+ <col style="width: 201pt;" width="268">
+ <tbody><tr style="height: 15pt;" height="20">
+  <td style="height: 15pt; width: 15pt;" height="20" width="20"><br>
+</td>
+  <td class="xl66" style="width: 27pt;" width="36">0</td>
+  <td class="xl65" style="width: 201pt;" width="268">Disabled</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl66">1</td>
+  <td class="xl65">Output once every one position fix</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl66">2</td>
+  <td class="xl65">Output once every two position fixes</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl66">3</td>
+  <td class="xl65">Output once every three position fixes</td>
+ </tr>
+ <tr style="height: 15.75pt;" height="21">
+  <td style="height: 15.75pt;" height="21"><br>
+</td>
+  <td class="xl66">4</td>
+  <td class="xl65">Output once every four position fixes</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td class="xl66">5</td>
+  <td class="xl65">Output once every five position fixes</td>
+ </tr>
+</tbody>
+</table>
+<br>
+ <ul>
+  
+  
+  
+  
+  
+  
+</ul><u1:p>Your GPS
+device has to be paired in your phones Bluetooth settings before you
+can select it with the <span style="color: rgb(0, 0, 153); font-style: italic; font-weight: bold;">set Logger</span> button. The selection is automatically </u1:p>saved.<u1:p>&nbsp; </u1:p>
+Use the <span style="font-weight: bold; font-style: italic; color: rgb(0, 0, 153);">Connect</span> button to establish a Bluetooth connection with your GPS device.&nbsp; Try the <span style="color: rgb(0, 0, 153); font-style: italic;">allow insecure connect</span> if you experience difficulty connecting.<br>
+<u1:p>
+<br>The NMEA sentences sent by your GPS
+device scroll in the bottom part of the screen after you connect.&nbsp; </u1:p>MTKutility
+is not a GPS track recorder. The NMEA output confirms
+an active Bluetooth connection and shows what is transmitted if you are
+using you logger as the GPS data source for another device.<br>
+<br>
+Use the restart buttons to reset your
+logger.<br>
+<br>
+<table style="border-collapse: collapse; width: 583pt;" border="0" cellpadding="0" cellspacing="0" width="776">
+<col style="width: 15pt;" width="20">
+ <col style="width: 65pt;" width="86">
+ <col style="width: 503pt;" width="670">
+ <tbody><tr style="height: 15pt;" height="20">
+  <td style="height: 15pt; width: 15pt;" height="20" width="20"><br>
+</td>
+  <td style="width: 65pt;" width="86">hot reset</td>
+  <td class="xl65" style="width: 503pt;" width="670">means use all available data in
+  the NV Store</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td>warm reset</td>
+  <td class="xl65">don't use Ephemeris at re-start</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td>cold reset</td>
+  <td class="xl65">don't use Time, Position, Almanacs and Ephemeris data at
+  re-start</td>
+ </tr>
+ <tr style="height: 15pt;" height="20">
+  <td style="height: 15pt;" height="20"><br>
+</td>
+  <td>factory reset</td>
+  <td class="xl65">cold restart and clear system/user configurations (reset the
+  receiver to the factory status).</td>
+ </tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+  
+  
+  
+  
+</ul>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="download_log"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Download Log</span> screen<br>
+<br>
+
+Use the <span style="font-style: italic; color: rgb(51, 51, 255); font-weight: bold;">Download Log</span>
+button to download the track point data from your GPS logger.&nbsp; The
+file
+created is a raw GPS logger memory dump.&nbsp; It cannot be used
+directly by track display apps.&nbsp; The file is created in your
+phone's download folder in the sub-folder MTKutility/bin.&nbsp; The
+storage location is arbitrary.&nbsp; You can transfer the binary file
+to another location using the phone's File Manager app.&nbsp; The <span style="font-weight: bold; font-style: italic; color: rgb(51, 51, 255);">Erase GPS Records</span> button triggers a format of the track point storage space on your logger.<br>
+<br>
+The log download has three setable preferences: <span style="color: rgb(204, 0, 0);">Disable NMEA when downloading</span>, <span style="color: rgb(204, 0, 0);">Disable GPS logging when downloading</span> and <span style="color: rgb(204, 0, 0);">Download Block Size</span>.&nbsp; <span style="color: rgb(204, 0, 0);">Disable NMEA when downloading</span> is turned on by default.&nbsp; Play with these if your download isn't happening.<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="make_GPX_file"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Make GPX file</span> screen<br>
+<br>
+Use this<span style="font-style: italic;"> </span>screen<u1:p> to
+create GPX files from previously downloaded binary files.&nbsp; You do not need
+to connect to your GPS logger to use this.&nbsp; You have to select the binary file
+you want to decode before you can create the GPX file.&nbsp; The file
+browser defaults to the MTKutility/bin location but you can navigate up
+to other locations.&nbsp; You should
+be able to read a file from any user accessible storage location on
+your phone
+including your SD card.&nbsp; </u1:p>Your phone's security will determine what you can do.<u1:p><br>
+<br>
+The file browser has been designed to let you navigate folders by clicking folder names.&nbsp; <span style="font-weight: bold;">Click the file icon</span> to select a file.<br>
+<br>
+<big style="color: red;"><span style="font-weight: bold;"></span></big></u1:p><span style="font-weight: bold; color: red;">NOTE:</span><big style="color: red;"><span style="font-weight: bold;"></span></big>&nbsp;The
+GPX file should have enough data for geotagging pictures <span style="color: red;">but it may not have all the data you selected for the
+log</span>.&nbsp; Use BT747 to create your GPX files if you use more than the
+default settings for your logger.<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="get_EPO_file"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Get EPO file</span> screen<br style="color: rgb(0, 170, 0); font-weight: bold;">
+<br>
+
+<u1:p>Use this screen</u1:p><u1:p> to down load an </u1:p><span class="st">Extended
+Prediction Orbit (EPO) file for your AGPS data update.&nbsp; There are
+2 flavors of EPO data, 60 byte data SET and 72 byte data SET.&nbsp; </span>the <span style="font-weight: bold; font-style: italic; color: rgb(0, 0, 153);">Select FTP URL</span> button currently has 2 sites available: the <span style="color: rgb(51, 51, 255);">Qstarz 60 byte</span> site and the <span style="color: rgb(51, 51, 255);">Globaltop 72 byte</span>
+site.&nbsp; You will need to rely on trail and error if you do not know
+which site to pick.&nbsp; My Qstarz logger will accept 72 byte records
+without error but it does not store the EPO data - and it takes forever
+(hours) to complete.&nbsp; There is also a configuration item
+associated with AGPS updates.&nbsp; Your logger will have a maximum
+size for stored records. I believe most loggers store 7 days but the
+sure way to know is update the AGPS using your PC application.&nbsp;
+Then note the <span style="color: rgb(0, 0, 153);">EPO set</span> value on the <span style="color: rgb(0, 170, 0); font-weight: bold;">Home</span> screen after you connect, divide this by 4, and set the result in your preferences.<br>
+<br>
+The <span style="color: rgb(51, 51, 255);">Globaltop 72 byte</span>
+site has 10 files, each with 3 days EPO data to make up a 30 day
+set.&nbsp; Updating with successive files will only result in 3 days
+data being stored on your GPS.&nbsp; You have to join files to get a 7,
+14 or 30 day AGPS update.&nbsp; Here's how.&nbsp; Download the
+EPO_GPS_3_1.DAT file.&nbsp; Then click the <span style="font-weight: bold; font-style: italic; color: rgb(51, 51, 255);">Select Local File button</span> and choose this file. It will appear in the <span style="color: rgb(51, 51, 255);">local file name slot </span>and is the file you will append to.&nbsp; Then click the <span style="color: rgb(51, 51, 255); font-weight: bold; font-style: italic;">Select EPO File</span> button again and select the EPO_GPS_3_2.DAT file.&nbsp; This will unlock the <span style="font-weight: bold; font-style: italic; color: rgb(51, 51, 255);">Append EPO file</span> button.&nbsp; Click it to do the append.&nbsp; Repeat with the <span style="color: rgb(51, 51, 255); font-weight: bold; font-style: italic;">Select EPO File</span> - <span style="font-weight: bold; font-style: italic; color: rgb(51, 51, 255);">Append EPO file</span> buttons combination until you have enough days collected to do a full AGPS update.<br>
+<br>
+The <span style="color: rgb(51, 51, 255);"></span><span style="color: rgb(51, 51, 255);">Globaltop 72 byte</span> site also has 60 byte files (MTK7d.EPO, etc.) but the last update I see was Jan 16, 2019.<br>
+
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="Check_EPO_file"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Check EPO file</span> screen<br><br>
+<span class="st"></span>Not implemented in the current release.<br>
+<br>
+(<a href="MTKhelp.html#top">return to top</a>)<br>
+<br>
+<a name="update_AGPS"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Update AGPS</span> screen<br>
+<br>
+You need to select the EPO data you plan to use before you can run the
+update.&nbsp; It is also a good idea to download first as EPO files are
+updated each day.&nbsp; Click <span style="color: rgb(51, 51, 255); font-weight: bold; font-style: italic;">Select EPO File</span>
+button.&nbsp; The default MTKutility/bin directory will open but you
+can navigate to a different location if your file is not in this
+folder.&nbsp; Click the file icon to select the file.&nbsp; This
+unlocks the <span style="font-style: italic; font-weight: bold; color: rgb(51, 51, 255);">Update AGPS data </span>button.&nbsp;
+MTKutility will limit the AGPS update to the size limit set in
+configuration.&nbsp; You can use a 30 day file for a 7 day update
+without having to worry about extra processing time for the larger file.<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="update_settings"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Update Settings</span> screen<br>
+<br>The settings screen has a cross section of GPS settings - not all
+possible settings but all that directly affect logging.&nbsp; It is
+made up of a set of buttons and an HTML report of your GPS device
+settings. The button rows match the rows in the HTML table.<br>
+<br>
+The <span style="font-weight: bold; font-style: italic; color: rgb(0, 0, 153);">Method</span> button has radio buttons for what happens when the logger's recording when memory is full.&nbsp; Leave this set at <span style="color: rgb(0, 0, 153);">Stop</span> if you want to use MTKutility to download trackpoint data.&nbsp; I do not have enough inormation to implement download for <span style="color: rgb(0, 0, 153);">Overwrite</span>.<br>
+<br>
+The only other button that doesn't show check boxes is the <span style="font-weight: bold; font-style: italic; color: rgb(0, 0, 153);">Frequency</span> button.&nbsp; The <span style="color: rgb(204, 0, 0);">by distance</span> and <span style="color: rgb(204, 0, 0);">speed over</span> values in the popup have to be whole numbers.&nbsp; The <span style="color: rgb(204, 0, 0);">by time</span> setting can be in tenths of a second - as fast as every tenth of a second (0.1).&nbsp; Works well for sky divers.&nbsp; But a <span style="color: rgb(204, 0, 0);">by time</span>
+setting under 1 second is not saved when you turn the logger off.&nbsp;
+The logger reverts to its default value. The logger capacity
+information is based on a memory size vlaue in device
+information.&nbsp; It may not be correct for your logger.&nbsp; The
+bitmask at the very bottom is only useful if you are intimately
+familiar with how the settings are stored.<br>
+<br>
+This screen has 2 size settings: one for the buttons and one for the
+HTML table.&nbsp; Adjust them in preferences (wrench at top right and
+reselect screen after changing) so that everything fits comfortably on
+your phone's screen.<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="send_app_log"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Send App Log</span> screen<br>
+<br>
+Use this to send a trace log by email to me.&nbsp; You need to choose
+either the MTKutilityLog.txt or MTKutilityErr.txt first.&nbsp; The
+MTKutilityErr.txt file is created when MTKutility encounters an
+unrecoverable error.&nbsp; The app is coded to catch these errors and
+restart itself with a popup to send the file to me.&nbsp; Please do so
+when this happens as this usually reflects a problem that has to be
+fixed.<br>
+<br>
+The MTKutilityLog.txt file will give me information about your phone
+and, if you connect before sending, the GPS device's information
+string.&nbsp; Please send a file to me at least once.&nbsp; Knowing
+device combinations will help with me with problem resolution and
+future enhancements.&nbsp; There is no personal information in the file
+and you can verify this by looking at a file before you send it.<br>
+<br>
+<a name="help"></a><span style="color: rgb(0, 170, 0); font-weight: bold;"><br>
+<br>
+<br>
+Help</span> screen (this document)<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="about_app"></a><span style="font-weight: bold; color: rgb(0, 170, 0);"><br>
+<br>
+<br>
+About</span> screen<br>
+<br>
+My statement about legal responsibility related to the use of this app
+- basically use at your own risk.&nbsp; I have taken reasonable care in
+trying to ensure the app works as indicated in this document.&nbsp; The
+apk posted on Google Play is the official one and I can guarantee there
+is not adware or spyware in it.&nbsp; However, this guarantee does not
+extend to installs from other sources.<br>
+<br>
+About also acknowledges the people that have contributed to this app.<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+<br>
+<a name="exit_app"></a><span style="font-weight: bold; color: rgb(0, 170, 0);"><br>
+<br>
+<br>
+Exit </span>function<br>
+<br>
+This shuts down the app in an orderly fashion by closing connections
+and open files.&nbsp; You can also exit by clicking the back button
+again when the message appears on a back button click.<br>
+<br>
+(<a href="#top">return to top</a>)<br>
+
+  
+<u1:p></u1:p><u1:p><br></u1:p><u1:p></u1:p><br>
+
+
+<small>
+
+
+  </small><small>
+    </small><small>
+      </small><small>
+    </small><small>
+  </small><small>
+  </small><table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="0"><tbody><tr><td style="vertical-align: top; text-align: center; white-space: nowrap;"><big><span style="font-weight: bold;"><span style="color: rgb(0, 153, 0);">crash reporting</span></span></big></td></tr></tbody></table>
+
+
+<p><span class="st"><span style="color: rgb(204, 0, 0);"><span style="font-weight: bold; text-decoration: underline; font-style: italic;"></span></span></span>All MTKutility public files are written to your phone's downloads folder in a
+sub-folder named MTKutility.&nbsp; The execution trace log is created in a
+file named MTKutilityLog.txt.&nbsp; A file named
+MTKutilityErr.txt is created when MTKutility
+crashes. MTKutility automatically restarts when a crash happens and
+presents the option to email the MTKutilityErr.txt file. <span style="font-style: italic;"><span style="color: red;">Please email this file to me. </span></span><span style="font-style: italic;"><span style="color: red;">If you can, add a short description of what you were trying to do when MTKutility crashed.</span></span> My ultimate goal is to have MTKutility work reliably with all MTK chip GPS devices.</p>
+
+<small>
+
+  </small><small>
+    </small><small>
+      </small><small>
+    </small><small>
+  </small><small>
+  </small><table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="0"><tbody><tr><td style="vertical-align: top; text-align: center; white-space: nowrap;"><big><span style="color: rgb(0, 153, 0); font-weight: bold;">will not work with my GPS logger</span></big></td></tr></tbody></table>
+
+<br>
+<p><span style="font-style: italic;"><span style="color: red;">email me if MTKutility does not work with your phone and GPS combination</span></span>.&nbsp;
+Please turn the verbose level 3 log trace level on and try to repeat
+the error, then send the report to me.&nbsp; Use the menu <i style="color: rgb(51, 51, 255); font-weight: bold;">Send App Log</i>
+function to send the trace log if the app doesn't automatically restart.&nbsp; Please add the make and
+model of both your phone and GPS as information as the trace log may not have
+captured this.</p><a name="problems"></a><br>
+
+<br>
+<br>
+<small></small><table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="0"><tbody><tr><td style="vertical-align: top; text-align: center; white-space: nowrap;"><big><span style="font-weight: bold;"><span style="color: rgb(0, 153, 0);">dealing with problems that arise</span></span></big></td></tr></tbody></table>
+<big><big><span style="font-weight: bold;"><span style="color: rgb(0, 153, 0);"></span></span></big></big><u1:p><span class="st"><span style="color: rgb(204, 0, 0);"><span style="font-weight: bold; text-decoration: underline; font-style: italic;"></span></span>Your MTK logger is put into binary communication
+mode for the AGPS data update.&nbsp; <span style="font-style: italic; font-weight: bold; text-decoration: underline; color: red;">If MTKutility fails during the AGPS update</span>, your
+logger will remain in binary mode and <span style="font-weight: bold;">will not function</span> as a track
+point
+recorder<span style="font-style: italic;"><span style="font-weight: bold;">.&nbsp; </span></span><span style="font-style: italic; font-weight: bold; color: red;">Make sure
+you run MTKutility again to
+restore NMEA output mode if it fails during an AGPS update.</span></span></u1:p><u1:p>&nbsp; MTKutility may be your only means of correcting this.&nbsp; My Qstarz PC software doesn't.<br>
+</u1:p>
+<p class="MsoNormal" style=""><u1:p>If you selected the <span style="color: rgb(204, 0, 0);">Disable NMEA when downloading</span> preference, a crash while downloading may result in NMEA output being turned off - no scrolling display on the&nbsp; </u1:p><span style="color: rgb(0, 170, 0); font-weight: bold;">Home</span><u1:p> screen when you connect.&nbsp; Use the </u1:p><i style="color: rgb(51, 102, 255); font-weight: bold;">Default NMEA</i> button on the <span style="color: rgb(0, 170, 0); font-weight: bold;">Home</span> screen to restore output.</p>
+<p class="MsoNormal" style="">If you selected the <span style="color: rgb(204, 0, 0);">Disable GPS logging when downloading</span>
+preference, you will need to turn your logger off after downloading to
+restore trackpoint recording capability.&nbsp; This can't be restored
+by the app as it overrides the manual setting on loggers that act as
+either a trackpoint transmitter of trackpoint recorder. <br>
+</p>
+
+<p class="MsoNormal" style=""><u1:p>
+<span class="st">Both
+the log download and AGPS update do occasionally stop before completion.&nbsp; </span></u1:p><span class="st">This
+is usually the result of a Bluetooth communication interruption.&nbsp;
+MTkutility has screen rotation turned off and display set to portrait
+to try an mitigate this but it can still happen. &nbsp; The only
+recovery I've been able to find for this is to turn my GPS off and
+restart my phone</span>.<br>
+</p><p><span style="font-weight: bold; color: red;">Actions to take if </span><span class="st"><span style="font-weight: bold; color: red;">MTKutility</span></span><span style="font-weight: bold; color: red;"> crashes:</span> cycle your phone's Bluetooth off and on, turn your GPS off and on,
+and try connecting again.&nbsp; <span style="font-weight: bold; font-style: italic;">MTKutility pushes
+Android </span><span style="font-weight: bold; font-style: italic;">Bluetooth</span><span style="font-weight: bold; font-style: italic;"> capability and implements data exchanges that would be better handled via a USB connection.</span>&nbsp;
+However, I have not been able to get the download to work over an OTG
+connection so Bluetooth is my only option.<br>
+</p>
+(<a href="#top">return to top</a>)<br>
+<br>
+</body></html>
