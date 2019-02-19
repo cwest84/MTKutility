@@ -1,18 +1,25 @@
 package com.adtdev.fileChooser;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
@@ -33,9 +40,19 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.io.FileUtils;
 
+import static org.apache.commons.io.FileUtils.forceDelete;
+
 public class FileChooser extends ListActivity {
 
     private static final int REQUEST_READ = 0;
+    private static final int LOCALsel = 0;
+    private static final int FTPsel = 1;
+    private static final int doLOCfile = 0;
+    private static final int doFTPfile = 1;
+    private static final int doFTPdnld = 2;
+    private final String fileActions[] = {"View","Rename","Delete"};
+//    private final String fileActions[] = {"View","Rename","Delete","Copy to","Move to"};
+    AlertDialog.Builder fileAction;
     private static CustomAdapter adapter;
     private ProgressDialog dialog;
     private File currentDir;
@@ -43,22 +60,28 @@ public class FileChooser extends ListActivity {
     private String rootPath;
     private String strtPath;
     private String ftpFile;
+    private String ftpPath = "/";
     private String lclFile;
     private String ftpURL;
     private String ftpName;
     private String ftpPswd;
     private int ftpPort;
     private boolean ftpAdd;
-    public boolean nofolders = false;
+    public boolean selfolders = false;
+    public boolean selfiles = true;
     public boolean showhidden = false;
+    private boolean doWrite = false;
     private String sTitle;
     private String[] sArr;
-    private boolean oK;
+    private boolean ok;
     private Context context;
     private  Intent intent;
+    private DataModel objSelected;
 
-    List<DataModel> dir = new ArrayList<DataModel>();
-    List<DataModel> fls = new ArrayList<DataModel>();
+    private List<DataModel> dir = new ArrayList<DataModel>();
+    private List<DataModel> fls = new ArrayList<DataModel>();
+    private String parent;
+    private int source;
     String bacK = "";
     String fn;
     File fN, fff;
@@ -82,13 +105,13 @@ public class FileChooser extends ListActivity {
         intent = getIntent();
         method = intent.getIntExtra("method", 0);
         switch (method) {
-            case 0:
+            case doLOCfile:
                 runLocal();
                 break;
-            case 1:
+            case doFTPfile:
                 runFTPsel();
                 break;
-            case 2:
+            case doFTPdnld:
                 runFTPdl();
                 break;
         }
@@ -97,9 +120,11 @@ public class FileChooser extends ListActivity {
     private void runLocal() {
         rootPath = intent.getStringExtra("root");
         strtPath = intent.getStringExtra("start");
-        nofolders = intent.getBooleanExtra("nofolders", false);
+        selfolders = intent.getBooleanExtra("selfolders", false);
+        selfiles = intent.getBooleanExtra("selfiles", true);
         showhidden = intent.getBooleanExtra("showhidden", false);
         currentDir = new File(strtPath);
+        doWrite = false;
         fill(currentDir);
     }//runLocal()
 
@@ -107,15 +132,17 @@ public class FileChooser extends ListActivity {
         ftpURL = intent.getStringExtra("ftpURL").trim();
         ftpName = intent.getStringExtra("ftpName").trim();
         ftpPswd = intent.getStringExtra("ftpPswd").trim();
+        selfolders = false;
         ftpPort = Integer.parseInt(intent.getStringExtra("ftpPort").trim());
         this.setTitle(ftpURL);
+        source = FTPsel;
         dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.working));
+        dialog.setMessage(getString(R.string.connecting));
         dialog.show();
         new Thread(new Runnable() {
             public void run() {
-                oK = ftpConnect();
-                if (oK) {
+                ok = ftpConnect();
+                if (ok) {
                     handler.sendEmptyMessage(0);
                 } else {
                     handler.sendEmptyMessage(-1);
@@ -159,16 +186,17 @@ public class FileChooser extends ListActivity {
 //            }
             if (msg.what == -1) {
                 if (dialog.isShowing()) dialog.dismiss();
-                Toast.makeText(context, "Error: connect failed - " + ftpURL, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "connect failed - " + ftpURL, Toast.LENGTH_LONG).show();
                 finish();
             } else if (msg.what == -2) {
                 if (dialog.isShowing()) dialog.dismiss();
-                Toast.makeText(context, "Error: download failed - " + ftpURL, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "download failed - " + ftpURL, Toast.LENGTH_LONG).show();
                 finish();
             } else if (msg.what == 0) {
                 if (dialog.isShowing()) dialog.dismiss();
                 Toast.makeText(context, "connected to " + ftpURL, Toast.LENGTH_SHORT).show();
-                getFTPfiles();
+                ftpPath = "/";
+                fillFTP(ftpPath);
             } else if (msg.what == 1) {
                 if (dialog.isShowing()) dialog.dismiss();
                 adapter = new CustomAdapter(FileChooser.this, R.layout.file_view, dir);
@@ -183,40 +211,160 @@ public class FileChooser extends ListActivity {
 
     };
 
-    private void getFTPfiles() {
+    private void fileAction(int sel) {
+        //fileActions={"Rename","Copy to","Move to","Delete"};
+        switch (sel) {
+            case 0:
+                viewFile();
+                break;
+            case 1:
+                //Rename
+                renameFile();
+                break;
+            case 2:
+                //Delete
+                deleteFile();
+                break;
+            case 3:
+                //Copu to
+                Toast.makeText(this, "Copy to selected", Toast.LENGTH_LONG).show();
+                break;
+            case 4:
+                //Move to
+                Toast.makeText(this, "Move to selected", Toast.LENGTH_LONG).show();
+                break;
+        }
+    }//fileAction()
+
+    private void fill(File f) {
+        if (f.getName().equalsIgnoreCase("emulated")) {
+            f = new File("/storage/emulated/0");
+        }
+        sTitle = f.getPath();
+        sArr = sTitle.split("/");
+        if (sArr.length > 4)
+            sTitle = "/" + sArr[1] + "/" + sArr[2] + "/.../" + sArr[sArr.length - 1];
+        this.setTitle(sTitle);
+        File[] dirs = f.listFiles();
+        List<DataModel> dir = new ArrayList<DataModel>();
+        List<DataModel> fls = new ArrayList<DataModel>();
+        String bacK = "";
+        String fn;
+        File fN, fff;
+        try {
+            for (File ff : dirs) {
+                fn = ff.getName();
+                if (fn.startsWith(".") && !showhidden) continue;
+                if (fn.equalsIgnoreCase("emulated")) {
+                    fff = new File("/storage/emulated/0");
+                } else {
+                    fff = ff;
+                }
+                if (fff.canRead() || (doWrite && fff.canWrite())) {
+                    String s = fff.getAbsolutePath();
+                    Date lastModDate = new Date(fff.lastModified());
+                    DateFormat formater = DateFormat.getDateTimeInstance();
+                    String date_modify = formater.format(lastModDate);
+                    if (ff.isDirectory()) {
+                        File[] fbuf = fff.listFiles();
+                        int buf = 0;
+                        if (fbuf != null) {
+                            buf = fbuf.length;
+                        } else buf = 0;
+                        String num_item = String.valueOf(buf);
+                        if (buf == 0) num_item = num_item + " item";
+                        else num_item = num_item + " items";
+
+                        //String formated = lastModDate.toString();
+                        if (selfolders) {
+                            dir.add(new DataModel(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), "folder"));
+                        }else {
+                            dir.add(new DataModel(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), "nofolder"));
+                        }
+                    } else {
+                        if (selfiles) {
+                            fls.add(new DataModel(ff.getName(), ff.length() + " Byte", date_modify, ff.getAbsolutePath(), "file"));
+                        }else{
+                            fls.add(new DataModel(ff.getName(), ff.length() + " Byte", date_modify, ff.getAbsolutePath(), "nofile"));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        Collections.sort(dir);
+        Collections.sort(fls);
+        dir.addAll(fls);
+        String ff = f.getAbsolutePath();
+        if (!f.getAbsolutePath().equalsIgnoreCase(rootPath)) {
+            parent = f.getParent();
+            fN = new File(parent);
+            parent = fN.getAbsolutePath();
+            String fldr[] = parent.split("/");
+            if (fldr.length > 2) parent = "../" + fldr[fldr.length-2]+"/"+fldr[fldr.length-1];
+            if (parent.equalsIgnoreCase("/storage/emulated")) parent = "/storage";
+            dir.add(0, new DataModel("<<- " + parent, ff, "", f.getParent(), "directory_up"));
+        }
+        adapter = new CustomAdapter(FileChooser.this, R.layout.file_view, dir);
+        this.setListAdapter(adapter);
+    }//fill()
+
+    private void fillFTP(String path) {
+        final String lpath = path;
+        dir = new ArrayList<DataModel>();
+        fls = new ArrayList<DataModel>();
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.reading));
+        dialog.show();
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    FTPFile[] files = mFTPClient.listFiles("/");
+                    FTPFile[] files = mFTPClient.listFiles(lpath);
                     for (FTPFile file : files) {
-                        buildFTPlist(file);
+                        fillFTPdisplayItem(file);
                     }
                     Collections.sort(dir);
                     Collections.sort(fls);
                     dir.addAll(fls);
+                    if (lpath.equalsIgnoreCase("/")){
+                        parent = "";
+                    }else {
+                        int lix = lpath.lastIndexOf('/');
+                        parent = (lix == 0) ?  lpath.substring(0, 1): lpath.substring(0, lix);
+                    }
+                    if (!parent.equalsIgnoreCase("")) {
+                        dir.add(0, new DataModel("<<- " + parent, lpath, "", parent, "directory_up"));
+                    }
                     handler.sendEmptyMessage(1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
-    }//getFTPfiles()
+    }//fillFTP()
 
-    private void buildFTPlist(FTPFile ff){
-        fn = ff.getName();
-//            if (fn.startsWith(".") && !showhidden) continue;
-
-//                String s = fff.getAbsolutePath();
-//                Date lastModDate = new Date(ff.getTimestamp());
+    private void fillFTPdisplayItem(FTPFile ff) {
+        Date lastModDate = new Date(ff.getTimestamp().getTimeInMillis());
         DateFormat formater = DateFormat.getDateTimeInstance();
-        String date_modify = formater.format(ff.getTimestamp().getTime());
+        String date_modify = formater.format(lastModDate);
+        String filepath = ftpPath + "/" + ff.getName();
+        filepath = filepath.replace("//", "/");
+        String s = ff.getRawListing();
         if (ff.isDirectory()) {
-//                    //String formated = lastModDate.toString();
-//                    dir.add(new DataModel(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), "folder"));
+            int buf = 0;
+            try {
+                buf = mFTPClient.listFiles(ftpPath + "/" + ff.getName()).length;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String num_item = String.valueOf(buf);
+            if (buf == 0) num_item = num_item + " item";
+            else num_item = num_item + " items";
+            dir.add(new DataModel(ff.getName(), num_item, date_modify, filepath, "folder"));
         } else {
-            fls.add(new DataModel(ff.getName(), ff.getSize() + " Byte", date_modify, ff.getName(), "file"));
+            fls.add(new DataModel(ff.getName(), ff.getSize() + " Byte", date_modify, filepath, "file"));
         }
-
     }
 
     private boolean ftpConnect() {
@@ -225,28 +373,25 @@ public class FileChooser extends ListActivity {
             mFTPClient.setConnectTimeout(5000);
             // connecting to the host
             mFTPClient.connect(ftpURL, ftpPort);
-            // now check the reply code, if positive mean connection success
-            if (FTPReply.isPositiveCompletion(mFTPClient.getReplyCode())) {
-                // login using username & password
-                boolean isOK = mFTPClient.login(ftpName, ftpPswd);
-                /*
-                 * Set File Transfer Mode
-                 *
-                 * To avoid corruption you must specifie a correct
-                 * transfer method, such as ASCII_FILE_TYPE, BINARY_FILE_TYPE,
-                 * EBCDIC_FILE_TYPE .etc. Here, I use BINARY_FILE_TYPE for
-                 * transferring text, image, and compressed files.
-                 */
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        // now check the reply code, if positive mean connection success
+        if (FTPReply.isPositiveCompletion(mFTPClient.getReplyCode())) {
+            // login using username & password
+            boolean isOK = false;
+            try {
+                isOK = mFTPClient.login(ftpName, ftpPswd);
                 mFTPClient.setDataTimeout(20000);
                 mFTPClient.setConnectTimeout(20000);
                 mFTPClient.setFileType(FTP.BINARY_FILE_TYPE);
                 mFTPClient.enterLocalPassiveMode();
                 return isOK;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
         return false;
     }//ftpConnect()
 
@@ -274,7 +419,7 @@ public class FileChooser extends ListActivity {
             e.printStackTrace();
         }
 
-        if (mFTPClient != null) {
+        if (mFTPClient != null && mFTPClient.isConnected()) {
             try {
                 mFTPClient.logout();
                 mFTPClient.disconnect();
@@ -285,69 +430,28 @@ public class FileChooser extends ListActivity {
         return isOK;
     }//ftpDownload()
 
-    private void fill(File f) {
-        if (f.getName().equalsIgnoreCase("emulated")) {
-            f = new File("/storage/emulated/0");
-        }
-        sTitle = f.getPath();
-        sArr = sTitle.split("/");
-        if (sArr.length > 4)
-            sTitle = "/" + sArr[1] + "/" + sArr[2] + "/.../" + sArr[sArr.length - 1];
-        this.setTitle(sTitle);
-        File[] dirs = f.listFiles();
-        List<DataModel> dir = new ArrayList<DataModel>();
-        List<DataModel> fls = new ArrayList<DataModel>();
-        String bacK = "";
-        String fn;
-        File fN, fff;
-        try {
-            for (File ff : dirs) {
-                fn = ff.getName();
-                if (fn.startsWith(".") && !showhidden) continue;
-                if (fn.equalsIgnoreCase("emulated")) {
-                    fff = new File("/storage/emulated/0");
-                } else {
-                    fff = ff;
-                }
-                if (fff.canRead()) {
-                    String s = fff.getAbsolutePath();
-                    Date lastModDate = new Date(fff.lastModified());
-                    DateFormat formater = DateFormat.getDateTimeInstance();
-                    String date_modify = formater.format(lastModDate);
-                    if (ff.isDirectory()) {
-                        File[] fbuf = fff.listFiles();
-                        int buf = 0;
-                        if (fbuf != null) {
-                            buf = fbuf.length;
-                        } else buf = 0;
-                        String num_item = String.valueOf(buf);
-                        if (buf == 0) num_item = num_item + " item";
-                        else num_item = num_item + " items";
+    public void longpress(DataModel obj){
+        if (source == FTPsel) return;
+        objSelected = obj;
+        int setChk = -1;
+        String ns = "long press on " + obj.getName();
+//        Toast.makeText(this,ns,Toast.LENGTH_LONG).show();
 
-                        //String formated = lastModDate.toString();
-                        dir.add(new DataModel(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), "folder"));
-                    } else {
-                        fls.add(new DataModel(ff.getName(), ff.length() + " Byte", date_modify, ff.getAbsolutePath(), "file"));
+        fileAction=new AlertDialog.Builder(context);
+//        fileAction.setTitle(R.string.fileAction)
+        fileAction.setTitle(obj.getName())
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int sel) {}})
+                .setItems(fileActions, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int sel) {
+                        dialog.dismiss();
+                        fileAction(sel);
                     }
-                }
-            }
-        } catch (Exception e) {
-
-        }
-        Collections.sort(dir);
-        Collections.sort(fls);
-        dir.addAll(fls);
-        String ff = f.getAbsolutePath();
-        if (!f.getAbsolutePath().equalsIgnoreCase(rootPath)) {
-            bacK = f.getParent();
-            fN = new File(bacK);
-            bacK = fN.getAbsolutePath();
-            if (bacK.equalsIgnoreCase("/storage/emulated")) bacK = "/storage";
-            dir.add(0, new DataModel("..", bacK, "", f.getParent(), "directory_up"));
-        }
-        adapter = new CustomAdapter(FileChooser.this, R.layout.file_view, dir);
-        this.setListAdapter(adapter);
-    }//fill()
+                })
+                .show();
+    }//longpress()
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -355,33 +459,123 @@ public class FileChooser extends ListActivity {
         super.onListItemClick(l, v, position, id);
         DataModel object = adapter.getItem(position);
 
-        if (object.getimage().equalsIgnoreCase("folder") || object.getimage().equalsIgnoreCase("directory_up")) {
+        if (object.getimage().contains("folder") || object.getimage().equalsIgnoreCase("directory_up")) {
 //            String path = o.getPath();
-            if (object.getpath().equalsIgnoreCase("/storage/emulated") && object.getimage().equalsIgnoreCase("directory_up")) {
-                currentDir = new File("/storage");
-            } else {
-                currentDir = new File(object.getpath());
+
+            switch (method) {
+                case doLOCfile:
+                    if (object.getpath().equalsIgnoreCase("/storage/emulated") && object.getimage().equalsIgnoreCase("directory_up")) {
+                        currentDir = new File("/storage");
+                    } else {
+                        currentDir = new File(object.getpath());
+                    }
+                    fill(currentDir);
+                    break;
+                case doFTPfile:
+                    ftpPath = object.getpath();
+                    fillFTP(ftpPath);
+                    break;
+                case doFTPdnld:
+                    // no action
+                    break;
             }
-            fill(currentDir);
         } else {
 //            sendBack(object);
         }
     }
 
-    public void startsendBack(DataModel object) {
-        String ss = object.getimage();
-        if (object.getimage().equalsIgnoreCase("file")) {
-            sendBack(object);
-        } else {
-            if (!nofolders) sendBack(object);
-        }
-    }
+    private void renameFile() {
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(objSelected.getName());
+
+        fileAction = new AlertDialog.Builder(this);
+        fileAction.setMessage("enter new name")
+            .setView(input)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    File df = new File(objSelected.getpath());
+                    File pp = new File(df.getParent());
+                    File nf = new File(pp + "/" + input.getText().toString());
+                    ok = df.renameTo(nf);
+                    if (ok) {
+                        Toast.makeText(getBaseContext(), "renamed to " + nf.getName(), Toast.LENGTH_LONG).show();
+                        fill(pp);
+                    }
+                }})
+            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }})
+            .show();
+    }//renameFile()
+
+
+    private void deleteFile() {
+        final TextView input = new TextView(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(objSelected.getName());
+
+        fileAction = new AlertDialog.Builder(this);
+        fileAction.setMessage("confirm delete")
+            .setView(input)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    File df = new File(objSelected.getpath());
+                    File pp = new File(df.getParent());
+                    try {
+                        forceDelete(df);
+                        Toast.makeText(getBaseContext(), objSelected.getName() + " deleted", Toast.LENGTH_SHORT).show();
+                        fill(pp);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }})
+            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }})
+            .show();
+    }//deleteFile()
 
     public void sendBack(DataModel object) {
+
         Intent intent = new Intent();
         intent.putExtra("GetPath", object.getpath());
         intent.putExtra("GetFileName", object.getName());
         setResult(RESULT_OK, intent);
         finish();
-    }
+    }//sendBack()
+
+    public void startsendBack(DataModel object) {
+        String ss = object.getimage();
+        if (object.getimage().contains("file")) {
+            if (selfiles) sendBack(object);
+        } else {
+            if (selfolders) sendBack(object);
+        }
+    }//startsendBack()
+
+    private void viewFile() {
+        MimeTypeMap myMime = MimeTypeMap.getSingleton();
+        String fn = objSelected.getName();
+        String ext = fn.substring(fn.lastIndexOf(".") + 1);
+        String mimeType = myMime.getMimeTypeFromExtension(ext);
+        File file = new File(objSelected.getpath());
+        //note: the path for the authority must match the AndroidManifest authorities
+        // a string is being used as this.getApplicationContext().getPackageName()
+        // does not provide the authority location
+        Uri uri = FileProvider.getUriForFile(this,
+//                "adtdev.com.fileChooser.provider", file);
+                "com.adtdev.mtkutility.provider", file);
+
+        Intent newIntent = new Intent(Intent.ACTION_VIEW);
+//        newIntent.setDataAndType(uri,"application/octet-stream");
+        newIntent.setDataAndType(uri, mimeType);
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        newIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        this.startActivity(newIntent);
+    }//viewFile()
 }

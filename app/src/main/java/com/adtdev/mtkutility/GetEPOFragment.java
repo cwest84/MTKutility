@@ -350,7 +350,8 @@ public class GetEPOFragment extends Fragment {
         intent.putExtra("method", myLibrary.doLOCAL);
         intent.putExtra("root", "/storage");
         intent.putExtra("start", startPath);
-        intent.putExtra("nofolders", false);
+        intent.putExtra("selfolders", false);
+        intent.putExtra("selfiles", true);
         intent.putExtra("showhidden", false);
         startActivityForResult(intent, LOCAL_FILE);
     }//doLCLfileSelect()
@@ -362,7 +363,8 @@ public class GetEPOFragment extends Fragment {
 //        intent.putExtra("root", "/storage");
         intent.putExtra("root", startPath);
         intent.putExtra("start", startPath);
-        intent.putExtra("nofolders", false);
+        intent.putExtra("selfolders", false);
+        intent.putExtra("selfiles", false);
         intent.putExtra("showhidden", false);
         startActivityForResult(intent, BYPASS_SELECT);
     }//doLOCALview()
@@ -409,7 +411,7 @@ public class GetEPOFragment extends Fragment {
                         //do nothing
                     }
                 })
-                .setSingleChoiceItems(cs,setChk, new DialogInterface.OnClickListener() {
+                .setItems(cs, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int idx) {
                         urlModel obj = sitesList.get(idx);

@@ -144,6 +144,7 @@ public class GetLogFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             mL.mLog(mL.VB0, "GetLogFragment.updateAGPS.onPreExecute()");
+            mL.bkGroundOK = true;
             initProgress();
             btnRun.setEnabled(false);
             btnErase.setEnabled(false);
@@ -177,7 +178,7 @@ public class GetLogFragment extends Fragment {
             mL.resetBuffers();
             bRead = 0;
 //            mL.mLog(mL.VB1, String.format("%1$s bRead=%2$d bMax=%3$d ", curFunc, bRead, bMax));
-            while ((bRead < bMax)) {
+            while ((bRead < bMax) && mL.bkGroundOK) {
                 mL.mLog(mL.VB1, String.format("%1$s bRead=%2$d bMax=%3$d ", curFunc, bRead, bMax));
                 int redo  = 0;
                 do {binBytes = processBLK();
@@ -205,7 +206,7 @@ public class GetLogFragment extends Fragment {
                 }
             }
             mL.BINclose();
-            if (mL.stopNMEA) {
+            if (mL.stopNMEA  && mL.bkGroundOK) {
                 mL.NMEAstart();
             }
             return null;
@@ -214,6 +215,8 @@ public class GetLogFragment extends Fragment {
         @Override
         protected void onPostExecute(Void param) {
             mL.mLog(mL.VB0, "GetLogFragment.updateAGPS.onPostExecute()");
+            if (!mL.bkGroundOK) return;
+
             if (mL.bOut != null) {
                 try {
                     mL.bOut.flush();
@@ -222,6 +225,7 @@ public class GetLogFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+
             if (mL.aborting) {
                 mL.mLog(mL.VB1, msg);
                 return;

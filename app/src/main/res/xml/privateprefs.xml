@@ -69,13 +69,13 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="disNmeaDown"
+            android:key="stopNMEA"
             android:summary=""
             android:title="@string/disNmeaDown"/>
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="disLogDown"
+            android:key="stopLOG"
             android:summary=""
             android:title="@string/disLogDown"/>
 			

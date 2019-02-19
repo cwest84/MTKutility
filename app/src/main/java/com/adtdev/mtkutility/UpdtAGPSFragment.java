@@ -394,6 +394,7 @@ public class UpdtAGPSFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             mL.mLog(mL.VB0, "UpdtAGPSFragment.updateAGPS.onPreExecute()");
+            mL.bkGroundOK = true;
             initProgress();
             btnEfile.setEnabled(false);
             btnUpdtEPO.setEnabled(false);
@@ -432,7 +433,7 @@ public class UpdtAGPSFragment extends Fragment {
 
             if (doBINdebug) openEPOdebugFile();
             mL.mLog(mL.VB2, String.format("+++ EPO blocks start **** %1$d EPO%2$d packets", epoPackets, epoType));
-            while (BUFix < maxBytes) {
+            while (BUFix < maxBytes  && mL.bkGroundOK) {
                 mL.mLog(mL.VB1, String.format("+++ EPO blocks loop **** BUFix=%1$d of %2$d ***", BUFix, maxBytes));
                 for (int lx = 0; lx < epoType; lx++) {
                     epoCMD[CMDix] = epoBytes[BUFix];
@@ -461,6 +462,9 @@ public class UpdtAGPSFragment extends Fragment {
                 mL.mLog(mL.VB2, String.format("+++ EPO blocks loop **** last SETS-CMDix=%1$d epoBlk=%2$d ***", CMDix, epoBlk));
                 sendEPOcmd();
             }
+
+            if (!mL.bkGroundOK) return null;
+
             //send end of records command
             for (int i = SATstart; i < epoBlk; i++) {
                 epoCMD[i] = 0x00;
@@ -560,6 +564,8 @@ public class UpdtAGPSFragment extends Fragment {
         protected void onPostExecute(Void param) {
             mL.mLog(mL.VB0, "UpdtAGPSFragment.updateAGPS.onPostExecute()");
 //            mL.NMEAstart();
+            if (!mL.bkGroundOK) return;
+
             if (abort) {
                 mTv.append(msg + "\n");
                 scrollDown();

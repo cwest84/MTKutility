@@ -7,6 +7,8 @@
 
     <string name="cancel">Cancel</string>
     <string name="exit">Exit</string>
+    <string name="back1">press back again to exit mtkutility</string>
+    <string name="back2">closing MTKutility</string>
 
     <string name="nowrite">MTKutility needs write internal storage permission</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

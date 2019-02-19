@@ -63,7 +63,6 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
                 android:text="@string/txNMEAinp"
-                android:textColor="@color/colorblack"
                 android:textSize="8pt" />
 
             <Button
@@ -95,9 +94,9 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:columnCount="7"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
-                android:columnCount="7"
                 android:rowCount="2"
                 android:useDefaultMargins="true">
 
@@ -218,8 +217,7 @@
             android:enabled="true"
             android:minLines="2"
             android:text="@string/allowInsecure"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/colorblack" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <CheckBox
             android:id="@+id/cbxInsecure"

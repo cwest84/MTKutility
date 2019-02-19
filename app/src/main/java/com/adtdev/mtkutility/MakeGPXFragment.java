@@ -119,7 +119,8 @@ public class MakeGPXFragment extends Fragment {
         intent.putExtra("method", myLibrary.doLOCAL);
         intent.putExtra("root","/storage");
         intent.putExtra("start", startPath);
-        intent.putExtra("nofolders",true);
+        intent.putExtra("selfolders", false);
+        intent.putExtra("selfiles", true);
         intent.putExtra("showhidden",false);
         startActivityForResult(intent,REQUEST_PATH);
     }//getfile()

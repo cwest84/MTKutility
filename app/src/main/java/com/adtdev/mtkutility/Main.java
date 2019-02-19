@@ -131,12 +131,13 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
     public void onBackPressed() {
         mL.mLog(mL.VB0, "Main.onBackPressed()");
         if (back_pressed + 2000 > System.currentTimeMillis()){
+            Toast.makeText(mL.mContext, getString(R.string.back2),Toast.LENGTH_SHORT).show();
             mL.closeActivities();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             finish();
             super.onBackPressed();
         }else{
-            Toast.makeText(mL.mContext, "press back again to exit mtkutility",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mL.mContext, getString(R.string.back1),Toast.LENGTH_SHORT).show();
         }
         back_pressed = System.currentTimeMillis();
         // back is disabled to ensure bluetooth connection with GPS is closed properly
@@ -167,7 +168,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mL.activeFragment = item.getItemId();
         Fragment fragment = null;
         if (mL.showNMEAisRunning){
-            mL.showNMEA = false;
+            mL.bkGroundOK = false;
         }
 
         switch (mL.activeFragment) {

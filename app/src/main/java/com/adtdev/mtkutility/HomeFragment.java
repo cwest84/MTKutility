@@ -191,7 +191,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
             @Override
             public void onClick(View v) {
                 mL.mLog(mL.VB1, "+++ HomeFragment.onCreateView() +++ button " + btnNMEAdflt.getText() + " pressed");
-                mL.showNMEA = false;
+                mL.bkGroundOK = false;
                 new defaultNMEA().execute();
             }
         });
@@ -282,7 +282,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
         super.onPause();
         // do not log here , causes abort on exit
         //stop the AsyncTask
-        mL.showNMEA = false;
+        mL.bkGroundOK = false;
     }//onPause()
 
     @Override
@@ -341,7 +341,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
         }
 
         if (mL.GPSconnected) {
-            mL.showNMEA = false;
+            mL.bkGroundOK = false;
             new disconnect().execute();
         } else {
             new connect().execute();
@@ -354,7 +354,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
             mL.showToast(getString(R.string.noConnect));
             return;
         }
-        mL.showNMEA = false;
+        mL.bkGroundOK = false;
         resetCmd = code;
         resetCMD doreset = new resetCMD();
         doreset.execute();
@@ -496,7 +496,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
 
     private void startNMEA() {
         mL.mLog(mL.VB0, "HomeFragment.startNMEA()");
-        mL.showNMEA = true;
+        mL.bkGroundOK = true;
         showNMEA task = new showNMEA();
         task.execute();
     }//startNMEA()
@@ -505,18 +505,18 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
         boolean loop = true;
 
         protected void onPreExecute() {
-            mL.mLog(mL.VB1, "HomeFragment.showNMEA.onPreExecute()");
+            mL.mLog(mL.VB1, "HomeFragment.bkGroundOK.onPreExecute()");
             mL.showNMEAisRunning = true;
         }//onPreExecute()
 
         @Override
         protected Void doInBackground(Void... params) {
-            mL.mLog(mL.VB1, "HomeFragment.showNMEA.doInBackground()");
+            mL.mLog(mL.VB1, "HomeFragment.bkGroundOK.doInBackground()");
             String reply = null;
 
-            while (mL.showNMEA) {
-//                if (!mL.showNMEA) {
-//                    mL.mLog(mL.NORMAL, "+++ HomeFragment.showNMEA.doInBackground() +++ showNMEA is false");
+            while (mL.bkGroundOK) {
+//                if (!mL.bkGroundOK) {
+//                    mL.mLog(mL.NORMAL, "+++ HomeFragment.bkGroundOK.doInBackground() +++ bkGroundOK is false");
 //                    break;
 //                }
                 try {
@@ -547,10 +547,10 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
         }//onProgressUpdate()
 
         protected void onPostExecute() {
-            mL.mLog(mL.VB1, "HomeFragment.showNMEA.onPostExecute()");
+            mL.mLog(mL.VB1, "HomeFragment.bkGroundOK.onPostExecute()");
             mL.showNMEAisRunning = false;
         }//onPostExecute()
-    }//class showNMEA
+    }//class bkGroundOK
 
     public class connect extends AsyncTask<Void, Void, Void> {
         private String str;
@@ -628,7 +628,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
                 setListeners();
                 setNMEAfields();
                 btnConnect.setText(getString(R.string.connected));
-                if (!mL.showNMEA) {
+                if (!mL.bkGroundOK) {
                     startNMEA();
                 }
                 mL.fillGPSstats();
@@ -684,7 +684,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
             mL.mLog(mL.VB1, "HomeFragment.defaultNMEA.onPostExecute()");
             if (mL.GPSconnected) {
                 setNMEAfields();
-                if (!mL.showNMEA) {
+                if (!mL.bkGroundOK) {
                     startNMEA();
                 }
             }
@@ -778,7 +778,7 @@ public class HomeFragment extends Fragment implements getGPSid.GPSdialogListener
         @Override
         protected void onPostExecute(Integer result) {
             mL.mLog(mL.VB1, "HomeFragment.resetCmd.onPostExecute()");
-            if (!mL.showNMEA) {
+            if (!mL.bkGroundOK) {
                 startNMEA();
             }
             mL.showToast(msg);

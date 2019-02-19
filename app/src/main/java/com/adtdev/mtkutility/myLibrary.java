@@ -150,7 +150,7 @@ public class myLibrary {
     public String ZDA;
 
 //    public boolean bakgrndOK = false;
-    public boolean showNMEA = false;
+    public boolean bkGroundOK = false;
     public boolean showNMEAisRunning = false;
     public Handler handler = new Handler();
 
@@ -280,8 +280,8 @@ public class myLibrary {
     public void closeActivities() {
         mLog(VB0, "myLibrary.closeActivities()");
         //stop NMEA AsyncTask
-        showNMEA = false;
-        goSleep(1500);
+        bkGroundOK = false;
+        goSleep(3000);
         // close navigation drawer
         DrawerLayout drawer = mContext.findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -357,8 +357,8 @@ public class myLibrary {
     public boolean disconnect() {
         mLog(VB0, "myLibrary.disconnect()");
         //stop Async tasks
-        showNMEA = false;
-        goSleep(1500);
+        bkGroundOK = false;
+        goSleep(3000);
 
 //        try {GPSin.close();
 //        } catch (IOException e) {
