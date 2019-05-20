@@ -149,7 +149,7 @@ public class GetLogFragment extends Fragment {
             btnRun.setEnabled(false);
             btnErase.setEnabled(false);
             dstart = new Date();
-            mTv.append("Log downlaod started " + mL.SDF.format(dstart) + mL.NL);
+            mTv.append("Log download started " + mL.SDF.format(dstart) + mL.NL);
             scrollDown();
         }//onPreExecute()
 
@@ -245,8 +245,8 @@ public class GetLogFragment extends Fragment {
             long minutes = diff / 60;
             long seconds = diff - (minutes * 60);
             long hours = minutes / 60;
-            mTv.append("Log downlaod ended " + mL.SDF.format(dend) + mL.NL);
-            mTv.append(String.format("Log downlaod time %1$d hours, %2$d minutes, %3$d seconds", hours, minutes, seconds) + mL.NL);
+            mTv.append("Log download ended " + mL.SDF.format(dend) + mL.NL);
+            mTv.append(String.format("Log download time %1$d hours, %2$d minutes, %3$d seconds", hours, minutes, seconds) + mL.NL);
             scrollDown();
         }//onPostExecute()
 

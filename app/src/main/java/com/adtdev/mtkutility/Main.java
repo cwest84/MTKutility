@@ -310,7 +310,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mL.publicPrefEditor.commit();
         mL.goSleep(250);
 
-        //create app fo;ders in Downlaod folder
+        //create app fo;ders in Download folder
         OK = true;
         mL.basePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), mL.basePathName);
         if (!mL.basePath.exists())
